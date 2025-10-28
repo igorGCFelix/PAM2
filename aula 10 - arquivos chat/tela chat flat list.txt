@@ -1,0 +1,67 @@
+  //defina a tela do Chat 
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <Text style={styles.header}>💬 Bem Vindo ao Chat {usuario}</Text>
+
+      <FlatList
+        ref={flatListRef}
+        data={mensagens}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => {
+          const isMe = item.usuario === usuario;
+          return (
+            <View
+              style={[
+                styles.msg,
+                isMe ? styles.msgMinha : styles.msgOutro,
+              ]}
+            >
+              {!isMe && (
+                <Text style={styles.usuario}>
+                  {userEmojis[item.usuario] || EMOJI_PADRAO} {item.usuario}
+                </Text>
+              )}
+              <Text style={styles.texto}>{item.mensagem}</Text>
+
+            
+              <View style={styles.linhaHora}>
+                <Text style={styles.hora}>{formatarHora(item.data_hora)}</Text>
+                {isMe && (
+                  <Text
+                    style={[
+                      styles.status,
+                      item.status === "lido" && styles.statusLido,
+                    ]}
+                  >
+                    {renderStatus(item.status)}
+                  </Text>
+                )}
+              </View>
+            </View>
+          );
+        }}
+        onContentSizeChange={() =>
+          flatListRef.current.scrollToEnd({ animated: true })
+        }
+        onLayout={() =>
+          flatListRef.current.scrollToEnd({ animated: true })
+        }
+      />
+
+      <View style={styles.inputArea}>
+        <TextInput
+          style={styles.inputMensagem}
+          placeholder="Digite sua mensagem..."
+          value={mensagem}
+          onChangeText={setMensagem}
+        />
+        <TouchableOpacity style={styles.botaoEnviar} onPress={enviarMensagem}>
+          <Text style={styles.botaoTexto}>➤</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}

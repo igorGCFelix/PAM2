@@ -1,0 +1,16 @@
+import React, { useState, useEffect, useRef } from "react";
+import {StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform} from "react-native";
+import axios from "axios";
+
+const API_URL = "http://COLOQUEAQUIIP/CAMINHOXAMPP";
+
+const EMOJIS_POSSIVEIS = ["😎", "😊", "🤖", "🌸", "🐱", "🐶", "🦄"];
+const EMOJI_PADRAO = "🙂";
+
+export default function App() {
+  const [usuario, setUsuario] = useState("");
+  const [nomeConfirmado, setNomeConfirmado] = useState(false);
+  const [mensagem, setMensagem] = useState("");
+  const [mensagens, setMensagens] = useState([]);
+  const [userEmojis, setUserEmojis] = useState({});
+  const flatListRef = useRef();

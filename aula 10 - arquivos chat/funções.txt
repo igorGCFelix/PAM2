@@ -1,0 +1,69 @@
+  useEffect(() => {
+    if (nomeConfirmado) {
+      carregarMensagens();
+      marcarComoLido();
+      const interval = setInterval(carregarMensagens,marcarComoLido, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [nomeConfirmado]);
+
+  const marcarComoLido = async () => {
+  try {
+    await axios.post(`${API_URL}/marcar_lido.php`, { usuario });
+    carregarMensagens(); // Atualiza mensagens após marcar como lido
+  } catch (err) {
+    console.log("Erro ao marcar como lido", err);
+  }
+};
+
+  const carregarMensagens = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/listar.php`);
+      const msgs = res.data.reverse();
+      setMensagens(msgs);
+
+      setUserEmojis((prev) => {
+        const novoMapa = { ...prev };
+        msgs.forEach((msg) => {
+          if (!novoMapa[msg.usuario]) {
+            const emoji =
+              EMOJIS_POSSIVEIS[
+                Math.floor(Math.random() * EMOJIS_POSSIVEIS.length)
+              ];
+            novoMapa[msg.usuario] = emoji;
+          }
+        });
+        return novoMapa;
+      });
+    } catch (err) {
+      console.log("Erro ao buscar mensagens", err);
+    }
+  };
+
+  const enviarMensagem = async () => {
+    if (mensagem.trim() === "") return;
+    try {
+      await axios.post(`${API_URL}/enviar.php`, { usuario, mensagem });
+      setMensagem("");
+      carregarMensagens();
+    } catch (err) {
+      console.log("Erro ao enviar mensagem", err);
+    }
+  };
+
+  // para formatar a hora
+  const formatarHora = (dataHora) => {
+    if (!dataHora) return "";
+    const date = new Date(dataHora);
+    return date.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // retornar o ícone de status 
+  const renderStatus = (status) => {
+    if (status === "entregue") return "✅✅"; 
+    if (status === "lido") return "✅👌"; 
+    return "";
+  };

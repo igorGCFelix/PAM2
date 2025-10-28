@@ -1,0 +1,21 @@
+//Defina a Tela Inicial do Chat 
+  if (!nomeConfirmado) {
+    return (
+      <View style={styles.loginContainer}>
+        <Text style={styles.titulo}>👋 Bem-vindo ao Chat 👋</Text>
+        <Text style={styles.subtitulo}>Digite seu nome </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Seu nome"
+          value={usuario}
+          onChangeText={setUsuario}
+        />
+        <TouchableOpacity
+          style={styles.botaoEntrar}
+          onPress={() => usuario.trim() !== "" && setNomeConfirmado(true)}
+        >
+          <Text style={styles.botaoTexto}>Entrar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
